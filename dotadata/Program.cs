@@ -6,151 +6,132 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using dotadata.Model;
 
 namespace dotadata
 {
     class Program
     {
+        //my steam API key
         public static string API = "23CEC905617913D3710DC832621110F3";
-        
+
+        //steam urls to get json data
+        public static string matchhistoryUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=";
+        public static string herosUrl = @"https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?key=";
+        public static string matchdetailsUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?&key=";
+
         static void Main(string[] args)
         {
-            string apiKey = "23CEC905617913D3710DC832621110F3";
-            string matchhistoryUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=";
-            string herosUrl = @"https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?key=";
+            //Get list of latest heroes with names parsed/cleaned
+            List<HeroesClass.Hero> heros = GetHeroes(herosUrl, API);
 
-            List<Match> matchHistory = new List<Match>();
-            List<HeroesClass> heroesClassdota = new List<HeroesClass>();
-
-            var heros = GetHeroes(herosUrl, API, heroesClassdota);
-            matchHistory = GetMatchHistory(matchhistoryUrl, apiKey, heros);
-
-            Match dota = new Match();
-            
+            //get latest 100 matches with brief details (no hero items/abilities/build info)
+            List<Match> matchHistory = GetMatchHistory(matchhistoryUrl, API, heros);
             
         }
 
-        public static string ConvertHeroFromID(int id,HeroesClass.HeroesObject heroes)
+        public static string ConvertHeroFromID(int id, List<HeroesClass.Hero> heroes)
         {
             string heronamestr = string.Empty;
-            foreach(var hero in heroes.result.heroes)
+            //Console.Write("Finding hero {0}..", id);
+            foreach(var hero in heroes)
             {
                 if(hero.id == id)
                 {
                     heronamestr = StringManipulation.UppercaseFirst(hero.name);
+                    //Console.WriteLine("..found {0}", heronamestr);
                     return heronamestr;
-                    break;
                 }
             }
+            
             return heronamestr;
 
         }
 
-        public static List<Match> GetMatchHistory(string uri, string api, HeroesClass.HeroesObject heroes)
+        public static List<Match> GetMatchHistory(string uri, string api, List<HeroesClass.Hero> heroes)
         {
+            //to do
+            //create a player class to hold more information regarding the individual 
+            //players including abilites/build info
+
+
             //create a container to store all of matches with everything
             //cleaned up
             //I create it up here because if If I hit a exception
             //I wanted to return the object with whatever it has
             List<Match> _matches = new List<Match>();
-            try
+
+            //download the resposne
+            string response = GetWebResponse.DownloadSteamAPIString(uri, api);
+
+
+            //serializing json data to our class
+            //this is when we parse all of the json data into
+            //our custom object classes
+            MatchRootObject ourResponse = JsonConvert.DeserializeObject<MatchRootObject>(response);
+            Console.WriteLine("Total Matches {0}", ourResponse.result.matches.Count.ToString());
+            int matchcountInt = 0;
+            foreach (var match in ourResponse.result.matches)
             {
+                Console.WriteLine(" Match {0} of {1}", matchcountInt, ourResponse.result.matches.Count);
+                //start looking up details on first match
+                //I created this object to store the details for this particular match
+                Match _match = new Match();
+
+                Console.WriteLine("     Match ID: {0}", match.match_id);
+                Console.WriteLine("     Lobby Type: {0} ({1})", LobbyTypes.GetLobbyType(match.lobby_type), match.lobby_type);
+                Console.WriteLine("     MatchSeqNum: {0}", match.match_seq_num);
                 
-                var response = string.Empty;
-                
-                //we format our url to include our api key
-                //Uri completeUri = new Uri(string.Format("{0}{1}", uri, API));
 
-                //I'm reading up on how to stylize code, I think
-                //this below method of creating a Uri is preferred
-                //over the string.Format that I originall used
-                Uri getmatchUri = new Uri(uri + api);
+                _match.match_id = match.match_id;
+                _match.lobby_type = match.lobby_type;
+                _match.LobbyType = LobbyTypes.GetLobbyType(match.lobby_type);
+                _match.match_seq_num = match.match_seq_num;
+                _match.players = match.players;
+                _match.start_time = match.start_time;
+                _match.StartTime = StringManipulation.UnixTimeStampToDateTime(match.start_time);
+                Console.WriteLine("     Start Time: {0}", _match.StartTime);
 
-                //client used to download the json response
-                using (WebClient client = new WebClient())
+                //looping through each player in the match
+                Console.WriteLine("     Real Players: {0}", match.players.Count.ToString());
+                int playercountInt = 1;
+                foreach (var player in match.players)
                 {
-                    //downloading the json response
-                    response = client.DownloadString(getmatchUri);
-                } 
+                    Console.WriteLine("         Player {0} of {1}", playercountInt, match.players.Count);
+                    string name = ConvertHeroFromID(player.hero_id, heroes);
+                    player.name = name;
+                    Console.WriteLine("             Name: {0}", name);
+                    Console.WriteLine("             Hero ID: {0}", player.hero_id);
+                    Console.WriteLine("             Account ID: {0}", player.account_id);
 
-
-                //serializing json data to our class
-                //this is when we parse all of the json data into
-                //our custom object classes
-                MatchRootObject ourResponse = JsonConvert.DeserializeObject<MatchRootObject>(response);
-                Console.WriteLine("Total Matches {0}", ourResponse.result.matches.Count.ToString());
-                int matchcountInt = 0;
-                foreach(var match in ourResponse.result.matches)
-                {
-                    Console.WriteLine("Match {0} of {1}", matchcountInt, ourResponse.result.matches.Count);
-                    //start looking up details on first match
-                    //I created this object to store the details for this particular match
-                    Match _match = new Match();
-                    
-                    Console.WriteLine("Match ID: {0}", match.match_id);
-                    Console.WriteLine("Lobby Type: {0}", match.lobby_type);
-                    Console.WriteLine("MatchSeqNum: {0}", match.match_seq_num);
-                    Console.WriteLine("Start Time: {0}", match.start_time);
-
-                    _match.match_id = match.match_id;
-                    _match.lobby_type = match.lobby_type;
-                    _match.match_seq_num = match.match_seq_num;
-                    _match.players = match.players;
-                    _match.start_time = match.start_time;
-
-                    //looping through each player in the match
-                    Console.WriteLine("Real Players: {0}", match.players.Count.ToString());
-                    int playercountInt = 0;
-                    foreach(var player in match.players)
-                    {
-                        Console.WriteLine("Hero ID: {0}", player.hero_id);
-                        string name = ConvertHeroFromID(player.hero_id, heroes);
-                        Console.WriteLine("*************");
-                        Console.WriteLine("Player {0} of {1}", playercountInt);
-                        Console.WriteLine("*************");
-
-                        //This was my original way of splitting the text
-                        //string splitword = "npc_dota_hero_";
-                        //var splitName = StringManipulation.SplitTextByWord(name, splitword);
-                        //string cleanName = splitName[1].Replace("_", " ");
-                        
-                        //I think this is a good way of cleaning up the name?
-                        string cleanName =  StringManipulation.UppercaseFirst(name.Split('_')[3]);
-                        Console.WriteLine("Name: {0}", cleanName);
-                        Console.WriteLine("orig-name: {0}", name);
-                        Console.WriteLine("Hero ID: {0}", player.hero_id);
-                        Console.WriteLine("Account ID: {0}", player.account_id);
-                        Console.WriteLine("=======================================");
-                    }
-
-                    _matches.Add(_match);
-                    matchcountInt++;
+                    playercountInt++;
                 }
-                return _matches;
-            }
-            catch (Exception ex)
-            {
 
-                Console.WriteLine(ex.Message);
-                return _matches;
-             
+                Console.WriteLine("**************************");
+                _matches.Add(_match);
+                matchcountInt++;
             }
+            return _matches;
+
+
         }
 
-        public static HeroesClass.HeroesObject GetHeroes(string uri, string api,List<HeroesClass> heroes)
+        
+
+        //public static List<Match> GetMatchDetail(string uri, string api, List<HeroesClass.Hero> heroes)
+        //{
+        //    //to do
+        //    //get match details
+        //    //uri is: https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?match_id=27110133&key=<key>
+        //string o = uri + api + "&match_id=" + matchid;
+        //        string response = GetWebResponse(uri, api);
+                
+               
+        //}
+        public static List<HeroesClass.Hero> GetHeroes(string uri, string api)
         {
-            try
-            {
-                var response = string.Empty;
-                //Uri completeUri = new Uri(string.Format("{0}{1}", uri, api));
-                //I'm reading up on how to stylize code, I think
-                //this below method of creating a Uri is preferred
-                //over the string.Format that I originall used
-                Uri getmatchUri = new Uri(uri + api);
-                using (WebClient client = new WebClient())
-                {
-                    response = client.DownloadString(getmatchUri);
-                }
+                string response = string.Empty;
+                response = GetWebResponse.DownloadSteamAPIString(uri, api);
                 
                 HeroesClass.HeroesObject ourResponse = JsonConvert.DeserializeObject<HeroesClass.HeroesObject>(response);
 
@@ -158,31 +139,37 @@ namespace dotadata
                 List<HeroesClass.Hero> Heroes = new List<HeroesClass.Hero>();
 
                 Console.WriteLine("Count of Heroes {0}", ourResponse.result.heroes.Count);
-                int herocountInt = 0;
+                int herocountInt = 1;
+
+            //hero id 0 is private profile i think?
+                HeroesClass.Hero Hero = new HeroesClass.Hero();
+                Hero.id = 0;
+                Hero.name = "Npc_dota_hero_Private Profile";
+                Console.WriteLine("Hero orig-name: {0}", Hero.name);
+                Heroes.Add(Hero);
+
                 foreach (var hero in ourResponse.result.heroes)
                 {
-                    
                     Console.WriteLine("Hero {0} of {1}", herocountInt, ourResponse.result.heroes.Count);
-                    HeroesClass.Hero Hero = new HeroesClass.Hero();
-                    Hero.name = StringManipulation.UppercaseFirst(hero.name);
+                    Console.WriteLine("Hero orig-name: {0}", hero.name);
+                    Hero = new HeroesClass.Hero();
+
+                    Hero.name = StringManipulation.UppercaseFirst(hero.name.Replace("npc_dota_hero_","").Replace("_"," "));
+                    Hero.id = hero.id;
                     Console.WriteLine("{0}", Hero.name);
                     Heroes.Add(Hero);
                     herocountInt++;
                 }
-                return ourResponse;
                 
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
+                return Heroes;
+            
         }
 
         public void client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }
