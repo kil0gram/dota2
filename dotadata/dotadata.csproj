@@ -49,9 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dota2matchHistoryClass.cs" />
-    <Compile Include="herosClass.cs" />
-    <Compile Include="MatchResult.cs" />
+    <Compile Include="Model\dota2matchHistoryClass.cs" />
+    <Compile Include="Model\herosClass.cs" />
+    <Compile Include="Model\MatchResult.cs" />
+    <Compile Include="Helpers\StringManipulation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

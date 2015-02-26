@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using dotadata;
 using MatchNameSpace;
 using DotaMatchHistory;
+using dotadata.Helpers;
 
 namespace dotadata
 {
@@ -29,6 +30,7 @@ namespace dotadata
 
             Match dota = new Match();
             
+            
         }
 
         public static string ConvertHeroFromID(int id,herosClass.HeroesObject heroes)
@@ -46,24 +48,39 @@ namespace dotadata
         public static List<Match> GetMatchHistory(string uri, string api, herosClass.HeroesObject heroes)
         {
             //create a container to store all of matches
+            //I create it up here because if If I hit a exception
+            //I wanted to return the object with whatever it has
             List<Match> _matches = new List<Match>();
             try
             {
                 var response = string.Empty;
                 
                 //we format our url to include our api key
-                Uri completeUri = new Uri(string.Format("{0}{1}", uri, API));
-                WebClient client = new WebClient();
+                //Uri completeUri = new Uri(string.Format("{0}{1}", uri, API));
 
-                //downloading the json response
-                response = client.DownloadString(completeUri);
+                //I'm reading up on how to stylize code, I think
+                //this below method of creating a Uri is preferred
+                //over the string.Format that I originall used
+                Uri getmatchUri = new Uri(uri + api);
+
+                //client used to download the json response
+                using (WebClient client = new WebClient())
+                {
+                    //downloading the json response
+                    response = client.DownloadString(getmatchUri);
+                } 
+
 
                 //serializing json data to our class
+                //this is when we parse all of the json data into
+                //our custom object classes
                 MatchRootObject ourResponse = JsonConvert.DeserializeObject<MatchRootObject>(response);
                 foreach(var match in ourResponse.result.matches)
                 {
                     //start looking up details on first match
+                    //I created this object to store the details for this particular match
                     Match _match = new Match();
+
                     Console.WriteLine("Match ID: {0}", match.match_id);
                     _match.lobby_type = match.lobby_type;
                     _match.match_id = match.match_id;
@@ -78,10 +95,11 @@ namespace dotadata
                         string name = ConvertHeroFromID(player.hero_id,heroes);
                         //used to make names pretty
                         string splitword = "npc_dota_hero_";
-                        var splitName = SplitTextByWord(name, splitword);
+                        var splitName = StringManipulation.SplitTextByWord(name, splitword);
+                        
                         string cleanName = splitName[1].Replace("_", " ");
 
-                        Console.WriteLine((UppercaseFirst(cleanName)));
+                        Console.WriteLine((StringManipulation.UppercaseFirst(cleanName)));
                         Console.WriteLine("Account ID: {0}", player.account_id);
                         Console.WriteLine("Hero ID: {0}",player.hero_id);
                         Console.WriteLine("=======================================");
@@ -100,12 +118,7 @@ namespace dotadata
              
             }
         }
-        public static string UppercaseFirst(string s)
-        {
-            char[] a = s.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
-        }
+        
         //static string UppercaseFirst(string s)
         //{
         //    // Check for empty string.
@@ -117,30 +130,7 @@ namespace dotadata
         //    return char.ToUpper(s[0]) + s.Substring(1);
         //}
 
-        public static List<string> SplitTextByWord(string text, string splitTerm)
-        {
-            List<string> splitItems = new List<string>();
-            if (string.IsNullOrEmpty(text)) return splitItems;
-            if (string.IsNullOrEmpty(splitTerm))
-            {
-                splitItems.Add(text);
-                return splitItems;
-            }
-            int nextPos = 0;
-            int curPos = 0;
-            while (nextPos > -1)
-            {
-                nextPos = text.IndexOf(splitTerm, curPos);
-                if (nextPos != -1)
-                {
-                    splitItems.Add(text.Substring(curPos, nextPos - curPos));
-                    curPos = nextPos + splitTerm.Length;
-                }
-            }
-            splitItems.Add(text.Substring(curPos, text.Length - curPos));
-
-            return splitItems;
-        }
+        
 
         public static herosClass.HeroesObject GetHeroes(string uri, string api,List<herosClass> heroes)
         {
