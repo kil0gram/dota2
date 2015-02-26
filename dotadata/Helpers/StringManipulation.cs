@@ -34,10 +34,14 @@ namespace dotadata.Helpers
         }
 
         public static string UppercaseFirst(string s)
-        {
-            char[] a = s.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
+        {//http://www.dotnetperls.com/uppercase-first-letter
+            // Check for empty string.
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+            // Return char and concat substring.
+            return char.ToUpper(s[0]) + s.Substring(1);
         }
     }
 }

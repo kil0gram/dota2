@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatchNameSpace
+namespace Heroes
 {
-    public class herosClass
+    public class HeroesClass
     {
         public class Hero
         {
@@ -14,7 +14,7 @@ namespace MatchNameSpace
             public int id { get; set; }
         }
 
-        public class Result
+        public class HeroesRoot
         {
             public List<Hero> heroes { get; set; }
             public int count { get; set; }
@@ -22,7 +22,7 @@ namespace MatchNameSpace
 
         public class HeroesObject
         {
-            public Result result { get; set; }
+            public HeroesRoot result { get; set; }
         }
     }
 }
