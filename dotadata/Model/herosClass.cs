@@ -11,6 +11,7 @@ namespace Heroes
         public class Hero
         {
             public string name { get; set; }
+            public string origname { get; set; }
             public int id { get; set; }
         }
 

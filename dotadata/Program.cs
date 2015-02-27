@@ -25,9 +25,12 @@ namespace dotadata
             //Get list of latest heroes with names parsed/cleaned
             List<HeroesClass.Hero> heros = GetHeroes(herosUrl, API);
 
+            
+
+            var matchdetails = GetMatchDetail(matchdetailsUrl, API, 1277955116, heros);
+
             //get latest 100 matches with brief details (no hero items/abilities/build info)
             List<Match> matchHistory = GetMatchHistory(matchhistoryUrl, API, heros);
-            
         }
 
         public static string ConvertHeroFromID(int id, List<HeroesClass.Hero> heroes)
@@ -116,18 +119,54 @@ namespace dotadata
 
         }
 
-        
 
-        //public static List<Match> GetMatchDetail(string uri, string api, List<HeroesClass.Hero> heroes)
-        //{
-        //    //to do
-        //    //get match details
-        //    //uri is: https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?match_id=27110133&key=<key>
-        //string o = uri + api + "&match_id=" + matchid;
-        //        string response = GetWebResponse(uri, api);
-                
-               
-        //}
+
+        public static Match GetMatchDetail(string uri, string api, int matchid, List<HeroesClass.Hero> heroes)
+        {
+            //to do
+            //get match details
+            //uri is: https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?match_id=27110133&key=<key>
+            string o = uri + api + "&match_id=" + matchid;
+            string response = GetWebResponse.DownloadSteamAPIString(uri, api + "&match_id=" + matchid);
+            
+            MatchDetails.MatchDetailsRootObject detail = JsonConvert.DeserializeObject<MatchDetails.MatchDetailsRootObject>(response);
+
+            Match match = new Match();
+            match.match_id = detail.result.match_id;
+            match.StartTime = StringManipulation.UnixTimeStampToDateTime(detail.result.start_time);
+            match.lobby_type = detail.result.lobby_type;
+            match.LobbyType = LobbyTypes.GetLobbyType(match.lobby_type);
+            match.match_id = detail.result.match_id;
+            match.match_seq_num = detail.result.match_seq_num;
+            match.humanplayers = detail.result.human_players;
+
+            Console.WriteLine("Match ID: {0}", match.match_id);
+            Console.WriteLine("Match SeqNum: {0}", match.match_seq_num);
+            Console.WriteLine("Real Players: {0}", match.humanplayers);
+            Console.WriteLine("Start Time: {0}", match.StartTime);
+
+            foreach (var player in detail.result.players)
+            {
+                Player Player = new DotaMatchHistory.Player();
+
+                Console.WriteLine("Account ID: {0}", player.account_id);
+                player.name = ConvertHeroFromID(player.hero_id, heroes);
+                Player.name = ConvertHeroFromID(player.hero_id, heroes);
+                Console.WriteLine(" {0}", player.name);
+                Console.WriteLine("     K/D/A: {0}/{1}/{2}", player.kills, player.deaths, player.assists);
+                Console.WriteLine("     CS: {0}/{1}", player.last_hits, player.denies);
+                Console.WriteLine("\tGold");
+                Console.WriteLine(" \tGPM: {0}g", player.gold_per_min);
+                Console.WriteLine(" \tGoldSpent: {0}g", player.gold_spent);
+                Console.WriteLine(" \tEnd of game: {0}g", player.gold);
+                match.players.Add(Player);
+            }
+
+            return match;
+            
+            
+        }
+
         public static List<HeroesClass.Hero> GetHeroes(string uri, string api)
         {
                 string response = string.Empty;
@@ -156,6 +195,7 @@ namespace dotadata
 
                     Hero.name = StringManipulation.UppercaseFirst(hero.name.Replace("npc_dota_hero_","").Replace("_"," "));
                     Hero.id = hero.id;
+                    Hero.origname = hero.name;
                     Console.WriteLine("{0}", Hero.name);
                     Heroes.Add(Hero);
                     herocountInt++;
