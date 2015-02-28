@@ -19,12 +19,24 @@ namespace dotadata
         public static string matchhistoryUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=";
         public static string herosUrl = @"https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?key=";
         public static string matchdetailsUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?&key=";
+        public static string steamaccountUrl = @"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=";
 
         static void Main(string[] args)
         {
+            //string steamid64 = "76561197992765754";
+            //string steamid32 = "32500026";
+            
+            //string convertedid64 = StringManipulation.SteamIDConverter(steamid32);
+            //string convertedid32 = StringManipulation.SteamIDConverter(steamid64);
+
+
+            string SteamID = "111348541";
+            var steamaccount = GetSteamAccount(steamaccountUrl, API, SteamID);
+
             //Get list of latest heroes with names parsed/cleaned
             List<HeroesClass.Hero> heros = GetHeroes(herosUrl, API);
 
+           
             
 
             var matchdetails = GetMatchDetail(matchdetailsUrl, API, 1277955116, heros);
@@ -42,7 +54,6 @@ namespace dotadata
                 if(hero.id == id)
                 {
                     heronamestr = StringManipulation.UppercaseFirst(hero.name);
-                    //Console.WriteLine("..found {0}", heronamestr);
                     return heronamestr;
                 }
             }
@@ -121,7 +132,7 @@ namespace dotadata
 
 
 
-        public static Match GetMatchDetail(string uri, string api, int matchid, List<HeroesClass.Hero> heroes)
+        public static MatchDetails.MatchDetailsResult GetMatchDetail(string uri, string api, int matchid, List<HeroesClass.Hero> heroes)
         {
             //to do
             //get match details
@@ -132,8 +143,11 @@ namespace dotadata
             MatchDetails.MatchDetailsRootObject detail = JsonConvert.DeserializeObject<MatchDetails.MatchDetailsRootObject>(response);
 
             Match match = new Match();
+            MatchDetails.MatchDetailsResult match2 = detail.result;
+
             match.match_id = detail.result.match_id;
             match.StartTime = StringManipulation.UnixTimeStampToDateTime(detail.result.start_time);
+            match2.StartTime = StringManipulation.UnixTimeStampToDateTime(detail.result.start_time);
             match.lobby_type = detail.result.lobby_type;
             match.LobbyType = LobbyTypes.GetLobbyType(match.lobby_type);
             match.match_id = detail.result.match_id;
@@ -147,11 +161,15 @@ namespace dotadata
 
             foreach (var player in detail.result.players)
             {
-                Player Player = new DotaMatchHistory.Player();
-
                 Console.WriteLine("Account ID: {0}", player.account_id);
                 player.name = ConvertHeroFromID(player.hero_id, heroes);
-                Player.name = ConvertHeroFromID(player.hero_id, heroes);
+                player.steamid64 = StringManipulation.SteamIDConverter(player.account_id);
+                player.steamid32 = StringManipulation.SteamIDConverter64to32(player.steamid64);
+                
+                var steamaccount = GetSteamAccount(steamaccountUrl, API, player.account_id);
+                player.steamvanityname = steamaccount.personaname;
+                Console.WriteLine("Vanity Name: {0}", player.steamvanityname);
+
                 Console.WriteLine(" {0}", player.name);
                 Console.WriteLine("     K/D/A: {0}/{1}/{2}", player.kills, player.deaths, player.assists);
                 Console.WriteLine("     CS: {0}/{1}", player.last_hits, player.denies);
@@ -159,13 +177,38 @@ namespace dotadata
                 Console.WriteLine(" \tGPM: {0}g", player.gold_per_min);
                 Console.WriteLine(" \tGoldSpent: {0}g", player.gold_spent);
                 Console.WriteLine(" \tEnd of game: {0}g", player.gold);
-                match.players.Add(Player);
+                
+
             }
 
-            return match;
+            return match2;
             
             
         }
+
+        public static SteamAccount.Player GetSteamAccount(string uri, string api, string SteamID)
+        {
+            string response = string.Empty;
+            var steamaccount = new SteamAccount.RootObject();
+            response = GetWebResponse.DownloadSteamAPIString(uri, (api + "&steamids=" + StringManipulation.SteamIDConverter(SteamID)));
+
+            SteamAccount.RootObject ourResponse = JsonConvert.DeserializeObject<SteamAccount.RootObject>(response);
+            SteamAccount.Player Player = new SteamAccount.Player();
+
+            if (ourResponse.response.players.Count == 0)
+            {
+                return Player;
+            }
+            else
+            {
+                //only 1 player should return?
+                Player = ourResponse.response.players[0];
+                return Player;
+            }
+
+
+        }
+
 
         public static List<HeroesClass.Hero> GetHeroes(string uri, string api)
         {

@@ -54,6 +54,7 @@
     <Compile Include="Model\MatchClass.cs" />
     <Compile Include="Model\HerosClass.cs" />
     <Compile Include="Helpers\StringManipulation.cs" />
+    <Compile Include="Model\SteamAccount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
