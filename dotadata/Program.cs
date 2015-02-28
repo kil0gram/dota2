@@ -141,22 +141,13 @@ namespace dotadata
             string response = GetWebResponse.DownloadSteamAPIString(uri, api + "&match_id=" + matchid);
             
             MatchDetails.MatchDetailsRootObject detail = JsonConvert.DeserializeObject<MatchDetails.MatchDetailsRootObject>(response);
+            MatchDetails.MatchDetailsResult match = detail.result;
 
-            Match match = new Match();
-            MatchDetails.MatchDetailsResult match2 = detail.result;
-
-            match.match_id = detail.result.match_id;
             match.StartTime = StringManipulation.UnixTimeStampToDateTime(detail.result.start_time);
-            match2.StartTime = StringManipulation.UnixTimeStampToDateTime(detail.result.start_time);
-            match.lobby_type = detail.result.lobby_type;
-            match.LobbyType = LobbyTypes.GetLobbyType(match.lobby_type);
-            match.match_id = detail.result.match_id;
-            match.match_seq_num = detail.result.match_seq_num;
-            match.humanplayers = detail.result.human_players;
 
             Console.WriteLine("Match ID: {0}", match.match_id);
             Console.WriteLine("Match SeqNum: {0}", match.match_seq_num);
-            Console.WriteLine("Real Players: {0}", match.humanplayers);
+            Console.WriteLine("Real Players: {0}", match.human_players);
             Console.WriteLine("Start Time: {0}", match.StartTime);
 
             foreach (var player in detail.result.players)
@@ -181,7 +172,7 @@ namespace dotadata
 
             }
 
-            return match2;
+            return match;
             
             
         }
