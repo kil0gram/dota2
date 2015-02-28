@@ -50,11 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\GetWebResponse.cs" />
-    <Compile Include="Model\LobbyTypes.cs" />
-    <Compile Include="Model\MatchClass.cs" />
+    <Compile Include="Model\LobbyTypesClass.cs" />
+    <Compile Include="Model\MatchDetailsClass_pending.cs" />
+    <Compile Include="Model\MatchHistoryClass.cs" />
     <Compile Include="Model\HerosClass.cs" />
     <Compile Include="Helpers\StringManipulation.cs" />
-    <Compile Include="Model\SteamAccount.cs" />
+    <Compile Include="Model\SteamAccountClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

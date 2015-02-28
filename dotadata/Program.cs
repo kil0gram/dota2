@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using dotadata.Model;
 using dotadata.Helpers;
-using DotaMatchHistory;
+using DotaMatch;
 
 namespace dotadata
 {
@@ -28,7 +28,7 @@ namespace dotadata
             //string convertedid64 = StringManipulation.SteamIDConverter(steamid32);
             //string convertedid32 = StringManipulation.SteamIDConverter(steamid64);
 
-
+            
             string SteamID = "111348541";
             var steamaccount = GetSteamAccount(steamaccountUrl, API, SteamID);
 
@@ -182,17 +182,17 @@ namespace dotadata
             
         }
 
-        /// <summary>Gets the Steam account details for a particular user ID, requires "SteamAccount". 
+        /// <summary>Gets the Steam account details for a particular user ID, requires "dotadata.Model.SteamAccount". 
         /// <seealso cref="http://uglyvpn.com/"/>
         /// </summary> 
-        public static SteamAccount.Player GetSteamAccount(string uri, string api, string SteamID)
+        public static SteamAccountClass.Player GetSteamAccount(string uri, string api, string SteamID)
         {
             string response = string.Empty;
-            var steamaccount = new SteamAccount.RootObject();
+            var steamaccount = new SteamAccountClass.RootObject();
             response = GetWebResponse.DownloadSteamAPIString(uri, (api + "&steamids=" + StringManipulation.SteamIDConverter(SteamID)));
 
-            SteamAccount.RootObject ourResponse = JsonConvert.DeserializeObject<SteamAccount.RootObject>(response);
-            SteamAccount.Player Player = new SteamAccount.Player();
+            SteamAccountClass.RootObject ourResponse = JsonConvert.DeserializeObject<SteamAccountClass.RootObject>(response);
+            SteamAccountClass.Player Player = new SteamAccountClass.Player();
 
             if (ourResponse.response.players.Count == 0)
             {

@@ -9,7 +9,7 @@ namespace dotadata.Model
     /// <summary>SteamAccount user object that holds info like vanity name and avatar links. 
     /// <seealso cref="http://uglyvpn.com/"/>
     /// </summary> 
-    public class SteamAccount
+    public class SteamAccountClass
     {
         public class Player
         {
