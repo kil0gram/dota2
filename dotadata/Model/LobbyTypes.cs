@@ -8,6 +8,19 @@ namespace dotadata.Model
 {
     public class LobbyTypes
     {
+        /// <summary>Converts the input int into a recognizable name
+        /// -1 : Invalid
+        /// 0 : Public Matching Making
+        /// 1 : Practice
+        /// 2 : Tournament
+        /// 3 : Tutorial
+        /// 4 : Co-Op with bots
+        /// 5 : Team Match
+        /// 6 : Solo Queue
+        /// 7 : Ranked Public Matchmaking
+        /// 8 : 1v1. 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static string GetLobbyType(int lobbytypeInt)
         {
             switch (lobbytypeInt)

@@ -1,12 +1,11 @@
-﻿using dotadata.Helpers;
-//using MatchNameSpace;
-using DotaMatchHistory;
-using Heroes;
+﻿using Heroes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using dotadata.Model;
+using dotadata.Helpers;
+using DotaMatchHistory;
 
 namespace dotadata
 {
@@ -36,15 +35,17 @@ namespace dotadata
             //Get list of latest heroes with names parsed/cleaned
             List<HeroesClass.Hero> heros = GetHeroes(herosUrl, API);
 
-           
-            
-
-            var matchdetails = GetMatchDetail(matchdetailsUrl, API, 1277955116, heros);
+            //Get match details for match id 1277955116
+            MatchDetails.MatchDetailsResult matchdetails = GetMatchDetail(matchdetailsUrl, API, 1277955116, heros);
 
             //get latest 100 matches with brief details (no hero items/abilities/build info)
             List<Match> matchHistory = GetMatchHistory(matchhistoryUrl, API, heros);
+
         }
 
+        /// <summary>Simply loops throw the list of heroes to find the ID given and then returns that heroes information. 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static string ConvertHeroFromID(int id, List<HeroesClass.Hero> heroes)
         {
             string heronamestr = string.Empty;
@@ -62,6 +63,9 @@ namespace dotadata
 
         }
 
+        /// <summary>Gets the latest (upto) 100 matches (so far, atleast for me during time of writing this 02-28-15). 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static List<Match> GetMatchHistory(string uri, string api, List<HeroesClass.Hero> heroes)
         {
             //to do
@@ -130,8 +134,9 @@ namespace dotadata
 
         }
 
-
-
+        /// <summary>Gets match details for a single match, this includes player builds and details. Requires "MatchClass". 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static MatchDetails.MatchDetailsResult GetMatchDetail(string uri, string api, int matchid, List<HeroesClass.Hero> heroes)
         {
             //to do
@@ -177,6 +182,9 @@ namespace dotadata
             
         }
 
+        /// <summary>Gets the Steam account details for a particular user ID, requires "SteamAccount". 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static SteamAccount.Player GetSteamAccount(string uri, string api, string SteamID)
         {
             string response = string.Empty;
@@ -200,7 +208,9 @@ namespace dotadata
 
         }
 
-
+        /// <summary>Gets the latest list of heroes from Steam, requires "HerosClass". 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static List<HeroesClass.Hero> GetHeroes(string uri, string api)
         {
                 string response = string.Empty;
@@ -237,11 +247,6 @@ namespace dotadata
                 
                 return Heroes;
             
-        }
-
-        public void client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         

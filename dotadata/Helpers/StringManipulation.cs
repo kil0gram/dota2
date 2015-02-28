@@ -8,6 +8,9 @@ namespace dotadata.Helpers
 {
     public class StringManipulation
     {
+        /// <summary>Split a string by a word. 
+        /// <para>Split a string by the input word.</para>
+        /// </summary>
         public static List<string> SplitTextByWord(string text, string splitTerm)
         {
             List<string> splitItems = new List<string>();
@@ -33,8 +36,11 @@ namespace dotadata.Helpers
             return splitItems;
         }
 
+        /// <summary>Capitalizes only the first character of the word. 
+        /// <seealso cref="http://www.dotnetperls.com/uppercase-first-letter"/>
+        /// </summary> 
         public static string UppercaseFirst(string s)
-        {//http://www.dotnetperls.com/uppercase-first-letter
+        {
             // Check for empty string.
             if (string.IsNullOrEmpty(s))
             {
@@ -44,16 +50,22 @@ namespace dotadata.Helpers
             return char.ToUpper(s[0]) + s.Substring(1);
         }
 
-     
-
+        /// <summary>UnixTimeStampToDateTime is a part of the Dota 2 helper class. 
+        /// <para>Converst UTC time to legable local time.</para>
+        /// <seealso cref="https://stackoverflow.com/questions/249760/how-to-convert-unix-timestamp-to-datetime-and-vice-versa"/>
+        /// </summary> 
         public static DateTime UnixTimeStampToDateTime(int unixTimeStamp)
-        {//https://stackoverflow.com/questions/249760/how-to-convert-unix-timestamp-to-datetime-and-vice-versa
+        {
             // Unix timestamp is seconds past epoch
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
 
+        /// <summary>SteamIDConverter will convert the input account id to its opposite. 
+        /// <para>If SteamAccountID is a 32bit number, this method will convert it to a 64bit and vice versa. <see cref="System.Console.WriteLine(System.String)"/> for information about output statements.</para>
+        /// <seealso cref="https://gist.github.com/almirsarajcic/4664387"/>
+        /// </summary> 
         public static string SteamIDConverter(string SteamAccountID)
         {//Found a cool way in PHP to convert steam ID so I adopted the method, credit
             //goes to original author, page here: https://gist.github.com/almirsarajcic/4664387
@@ -79,6 +91,12 @@ namespace dotadata.Helpers
             return converted_id;
         }
 
+        /// <summary>SteamIDConverter32to64 will convert a 32bit Steam account ID to a 64bit account ID. 
+        /// <para>If SteamAccountID is a 32bit number, this method will convert it to a 64bit.
+        /// 32bit account id input = 32500026
+        /// 64bit account id output = 76561197992765754</para>
+        /// <seealso cref="https://gist.github.com/almirsarajcic/4664387"/>
+        /// </summary> 
         public static string SteamIDConverter32to64(string SteamID)
         {
             decimal steamidDec = Convert.ToDecimal(SteamID);
@@ -86,6 +104,13 @@ namespace dotadata.Helpers
             
             return converted_id;
         }
+
+        /// <summary>SteamIDConverter32to64 will convert a 64bit Steam account ID to a 32bit account ID. 
+        /// <para>If SteamAccountID is a 64bit number, this method will convert it to a 32bit.
+        /// 32bit account id input = 76561197992765754
+        /// 64bit account id output = 32500026</para>
+        /// <seealso cref="https://gist.github.com/almirsarajcic/4664387"/>
+        /// </summary> 
         public static string SteamIDConverter64to32(string SteamID)
         {
             decimal steamidDec = Convert.ToDecimal(SteamID.Substring(3));

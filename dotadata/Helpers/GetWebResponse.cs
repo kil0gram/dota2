@@ -9,6 +9,9 @@ namespace dotadata.Model
 {
     public class GetWebResponse
     {
+        /// <summary>Customized to download from Steam using format of uri + api. 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static string DownloadSteamAPIString(string uri, string api)
         {
             var response = string.Empty;
