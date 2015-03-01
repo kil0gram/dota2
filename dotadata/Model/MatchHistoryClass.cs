@@ -14,12 +14,14 @@ namespace dotadata.Model
         /// <summary>Gets the latest (upto) 100 matches (so far, atleast for me during time of writing this 02-28-15). 
         /// <seealso cref="http://uglyvpn.com/"/>
         /// </summary> 
-        public static List<Match> GetMatchHistory(List<Heroes.Hero> heroes)
+        public static List<Match> GetMatchHistory()
         {
             //to do
             //create a player class to hold more information regarding the individual 
             //players including abilites/build info
 
+            //we get a list of the latest heroes
+            List<Heroes.Hero> heroes = Heroes.GetHeroes(false);
 
             //create a container to store all of matches with everything
             //cleaned up

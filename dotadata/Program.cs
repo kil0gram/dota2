@@ -17,13 +17,13 @@ namespace dotadata
             var steamaccount = SteamAccount.GetSteamAccount(SteamID);
             
             //Get list of latest heroes with names parsed/cleaned
-            List<Heroes.Hero> heros = Heroes.GetHeroes();
+            List<Heroes.Hero> heros = Heroes.GetHeroes(true);
             
             //get latest 100 matches with brief details (no hero items/abilities/build info)
-            List<Match> latest100matches = MatchHistory.GetMatchHistory(heros);
+            List<Match> latest100matches = MatchHistory.GetMatchHistory();
 
             //Get match details for match id 1277955116
-            MatchDetails.MatchDetailsResult matchdetails = MatchDetails.GetMatchDetail(1277955116, heros);
+            MatchDetails.MatchDetailsResult matchdetails = MatchDetails.GetMatchDetail(1277955116);
             
         }
        
