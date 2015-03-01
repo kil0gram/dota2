@@ -66,10 +66,12 @@ namespace dotadata.Model
                     Console.WriteLine("         Player {0} of {1}", playercountInt, match.players.Count);
                     string name = Common.ConvertHeroFromID(player.hero_id, heroes);
                     player.name = name;
-                    
+                    player.steamvanityname = SteamAccount.GetSteamAccount(Common.steamaccountUrl, Common.API, player.account_id).personaname;
+
                     Console.WriteLine("             Name: {0}", name);
                     Console.WriteLine("             Hero ID: {0}", player.hero_id);
                     Console.WriteLine("             Account ID: {0}", player.account_id);
+                    Console.WriteLine("             Vanity Name: {0}", player.steamvanityname);
 
                     playercountInt++;
                 }
@@ -88,7 +90,7 @@ namespace dotadata.Model
 
     public class Player
     {
-        public object account_id { get; set; }
+        public string account_id { get; set; }
         public int player_slot { get; set; }
         public int hero_id { get; set; }
         public string name { get; set; }

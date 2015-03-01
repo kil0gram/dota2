@@ -11,7 +11,6 @@ namespace dotadata.Model
 {
     public class Heroes
     {
-
         /// <summary>Gets the latest list of heroes from Steam, requires "HerosClass". 
         /// <seealso cref="http://uglyvpn.com/"/>
         /// </summary> 
