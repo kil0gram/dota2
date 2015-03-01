@@ -1,4 +1,6 @@
-﻿using System;
+﻿using dotadata.Helpers;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +11,35 @@ namespace dotadata.Model
     /// <summary>SteamAccount user object that holds info like vanity name and avatar links. 
     /// <seealso cref="http://uglyvpn.com/"/>
     /// </summary> 
-    public class SteamAccountClass
+    public class SteamAccount
     {
+
+        /// <summary>Gets the Steam account details for a particular user ID, requires "dotadata.Model.SteamAccount". 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
+        public static SteamAccount.Player GetSteamAccount(string uri, string api, string SteamID)
+        {
+            string response = string.Empty;
+            var steamaccount = new SteamAccount.RootObject();
+            response = GetWebResponse.DownloadSteamAPIString(uri, (api + "&steamids=" + StringManipulation.SteamIDConverter(SteamID)));
+
+            SteamAccount.RootObject ourResponse = JsonConvert.DeserializeObject<SteamAccount.RootObject>(response);
+            SteamAccount.Player Player = new SteamAccount.Player();
+
+            if (ourResponse.response.players.Count == 0)
+            {
+                return Player;
+            }
+            else
+            {
+                //only 1 player should return?
+                Player = ourResponse.response.players[0];
+                return Player;
+            }
+
+
+        }
+
         public class Player
         {
             public string steamid { get; set; }

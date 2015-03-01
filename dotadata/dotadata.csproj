@@ -49,9 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Common.cs" />
     <Compile Include="Helpers\GetWebResponse.cs" />
     <Compile Include="Model\LobbyTypesClass.cs" />
-    <Compile Include="Model\MatchDetailsClass_pending.cs" />
+    <Compile Include="Model\MatchDetailsClass.cs" />
     <Compile Include="Model\MatchHistoryClass.cs" />
     <Compile Include="Model\HerosClass.cs" />
     <Compile Include="Helpers\StringManipulation.cs" />
