@@ -17,11 +17,11 @@ namespace dotadata.Model
         /// <summary>Gets the Steam account details for a particular user ID, requires "dotadata.Model.SteamAccount". 
         /// <seealso cref="http://uglyvpn.com/"/>
         /// </summary> 
-        public static SteamAccount.Player GetSteamAccount(string uri, string api, string SteamID)
+        public static SteamAccount.Player GetSteamAccount(string SteamID)
         {
             string response = string.Empty;
             var steamaccount = new SteamAccount.RootObject();
-            response = GetWebResponse.DownloadSteamAPIString(uri, (api + "&steamids=" + StringManipulation.SteamIDConverter(SteamID)));
+            response = GetWebResponse.DownloadSteamAPIString(Common.steamaccountUrl, (Common.API + "&steamids=" + StringManipulation.SteamIDConverter(SteamID)));
 
             SteamAccount.RootObject ourResponse = JsonConvert.DeserializeObject<SteamAccount.RootObject>(response);
             SteamAccount.Player Player = new SteamAccount.Player();

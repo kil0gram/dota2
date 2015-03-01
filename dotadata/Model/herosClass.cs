@@ -14,10 +14,10 @@ namespace dotadata.Model
         /// <summary>Gets the latest list of heroes from Steam, requires "HerosClass". 
         /// <seealso cref="http://uglyvpn.com/"/>
         /// </summary> 
-        public static List<Heroes.Hero> GetHeroes(string uri, string api)
+        public static List<Heroes.Hero> GetHeroes()
         {
             string response = string.Empty;
-            response = GetWebResponse.DownloadSteamAPIString(uri, api);
+            response = GetWebResponse.DownloadSteamAPIString(Common.herosUrl, Common.API);
 
             Heroes.HeroesObject ourResponse = JsonConvert.DeserializeObject<HeroesObject>(response);
 
@@ -36,14 +36,14 @@ namespace dotadata.Model
 
             foreach (var hero in ourResponse.result.heroes)
             {
-                Console.WriteLine("Hero {0} of {1}", herocountInt, ourResponse.result.heroes.Count);
-                Console.WriteLine("Hero orig-name: {0}", hero.name);
+                //Console.WriteLine("Hero {0} of {1}", herocountInt, ourResponse.result.heroes.Count);
+                Console.Write("{0} of {1}. Hero orig-name: {2}|", herocountInt, ourResponse.result.heroes.Count, hero.name);
                 Hero = new Heroes.Hero();
 
                 Hero.name = StringManipulation.UppercaseFirst(hero.name.Replace("npc_dota_hero_", "").Replace("_", " "));
                 Hero.id = hero.id;
                 Hero.origname = hero.name;
-                Console.WriteLine("{0}", Hero.name);
+                Console.WriteLine(" cleaned: {0}", Hero.name);
                 Heroes.Add(Hero);
                 herocountInt++;
             }

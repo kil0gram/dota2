@@ -14,7 +14,6 @@ namespace dotadata.Helpers
         //</summary>
         public static string API = "23CEC905617913D3710DC832621110F3";
 
-
         //steam urls to get json data
         public static string matchhistoryUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=";
         public static string herosUrl = @"https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?key=";

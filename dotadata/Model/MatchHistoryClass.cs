@@ -14,7 +14,7 @@ namespace dotadata.Model
         /// <summary>Gets the latest (upto) 100 matches (so far, atleast for me during time of writing this 02-28-15). 
         /// <seealso cref="http://uglyvpn.com/"/>
         /// </summary> 
-        public static List<Match> GetMatchHistory(string uri, string api, List<Heroes.Hero> heroes)
+        public static List<Match> GetMatchHistory(List<Heroes.Hero> heroes)
         {
             //to do
             //create a player class to hold more information regarding the individual 
@@ -28,7 +28,7 @@ namespace dotadata.Model
             List<Match> _matches = new List<Match>();
 
             //download the resposne
-            string response = GetWebResponse.DownloadSteamAPIString(uri, api);
+            string response = GetWebResponse.DownloadSteamAPIString(Common.matchhistoryUrl, Common.API);
 
 
             //serializing json data to our class
@@ -66,7 +66,7 @@ namespace dotadata.Model
                     Console.WriteLine("         Player {0} of {1}", playercountInt, match.players.Count);
                     string name = Common.ConvertHeroFromID(player.hero_id, heroes);
                     player.name = name;
-                    player.steamvanityname = SteamAccount.GetSteamAccount(Common.steamaccountUrl, Common.API, player.account_id).personaname;
+                    player.steamvanityname = SteamAccount.GetSteamAccount(player.account_id).personaname;
 
                     Console.WriteLine("             Name: {0}", name);
                     Console.WriteLine("             Hero ID: {0}", player.hero_id);
@@ -85,8 +85,6 @@ namespace dotadata.Model
 
         }
     }
-
-
 
     public class Player
     {
