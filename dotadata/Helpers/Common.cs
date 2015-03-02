@@ -14,6 +14,7 @@ namespace dotadata.Helpers
         //</summary>
         public static string API = "23CEC905617913D3710DC832621110F3";
         public static string items_txt_path = @"D:\dota\items.txt";
+        public static string abilities_txt_path = @"D:\dota\npc_abilities.txt";
         
 
         //steam urls to get json data
@@ -59,6 +60,24 @@ namespace dotadata.Helpers
             }
 
             return itemname;
+        }
+
+        /// <summary>Simply loops throw the list of Abilities to find the ID given and then returns that abilities name. 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
+        public static string ConvertAbilityIDtoName(string id, List<AbilitiesClass.Ability> Abilities)
+        {
+            string abilityname = string.Empty;
+            foreach (var ability in Abilities)
+            {
+                if (ability.ID == id)
+                {
+                    abilityname = StringManipulation.UppercaseFirst(ability.Name);
+                    break;
+                }
+            }
+
+            return abilityname;
         }
 
     }

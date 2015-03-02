@@ -52,7 +52,10 @@ namespace dotadata.Model
             public string avatarmedium { get; set; }
             public string avatarfull { get; set; }
             public int personastate { get; set; }
+
         }
+
+        
 
         public class Response
         {

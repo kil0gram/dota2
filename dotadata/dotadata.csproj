@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Helpers\Common.cs" />
     <Compile Include="Helpers\GetWebResponse.cs" />
+    <Compile Include="Model\AbilitiesClass.cs" />
     <Compile Include="Model\ItemsClass.cs" />
     <Compile Include="Model\LobbyTypesClass.cs" />
     <Compile Include="Model\MatchDetailsClass.cs" />

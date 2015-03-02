@@ -87,6 +87,10 @@ namespace dotadata.Model
 
         }
 
+        /// <summary>Used to get the matches in the order which they were recorded (i.e. sorted ascending by match_seq_num).
+        /// This means that the first match on the first page of results returned by the call will be the very first public mm-match recorded in the stats. 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
         public static List<dotadata.Model.MatchDetails.MatchDetailsResult> GetMatchHistoryBySeqNum(int matchseqnumb, int requestedmatches, List<ItemsClass.Item> DotaItems)
         {
             //to do
