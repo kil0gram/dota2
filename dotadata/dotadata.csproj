@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,8 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\Common.cs" />
-    <Compile Include="Helpers\CSVFile.cs" />
     <Compile Include="Helpers\GetWebResponse.cs" />
+    <Compile Include="Model\ItemsClass.cs" />
     <Compile Include="Model\LobbyTypesClass.cs" />
     <Compile Include="Model\MatchDetailsClass.cs" />
     <Compile Include="Model\MatchHistoryClass.cs" />
@@ -64,6 +65,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Extras\items.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

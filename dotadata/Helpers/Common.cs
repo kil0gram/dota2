@@ -13,6 +13,8 @@ namespace dotadata.Helpers
         //key from steam and replace below
         //</summary>
         public static string API = "23CEC905617913D3710DC832621110F3";
+        public static string items_txt_path = @"D:\dota\items.txt";
+        
 
         //steam urls to get json data
         public static string matchhistoryUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=";
@@ -26,18 +28,36 @@ namespace dotadata.Helpers
         public static string ConvertHeroFromID(int id, List<Heroes.Hero> heroes)
         {
             string heronamestr = string.Empty;
-            //Console.Write("Finding hero {0}..", id);
+
             foreach (var hero in heroes)
             {
                 if (hero.id == id)
                 {
                     heronamestr = StringManipulation.UppercaseFirst(hero.name);
-                    return heronamestr;
+                    break;
                 }
             }
 
             return heronamestr;
 
+        }
+
+        /// <summary>Simply loops throw the list of DotaItems to find the ID given and then returns that items name. 
+        /// <seealso cref="http://uglyvpn.com/"/>
+        /// </summary> 
+        public static string ConvertItemIDtoName(string id, List<ItemsClass.Item> DotaItems)
+        {
+            string itemname = string.Empty;
+            foreach (var item in DotaItems)
+            {
+                if (item.id == id)
+                {
+                    itemname = StringManipulation.UppercaseFirst(item.name);
+                    break;
+                }
+            }
+
+            return itemname;
         }
 
     }

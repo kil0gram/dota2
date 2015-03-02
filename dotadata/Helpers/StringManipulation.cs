@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace dotadata.Helpers
 {
@@ -117,6 +118,18 @@ namespace dotadata.Helpers
             string converted_id = (steamidDec - 61197960265728).ToString();
 
             return converted_id;
+        }
+
+        /// <summary>Convert our object into json string. 
+        /// </summary> 
+        public static string ObjectToJson(object itemsobject)
+        {
+            //take our structured object and convert
+            //it over to json format.
+            var json = new JavaScriptSerializer();
+            var jsonserialized = json.Serialize(itemsobject);
+
+            return jsonserialized.ToString();
         }
     }
 }
