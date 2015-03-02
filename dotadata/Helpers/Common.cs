@@ -21,6 +21,7 @@ namespace dotadata.Helpers
         public static string herosUrl = @"https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?key=";
         public static string matchdetailsUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/V001/?&key=";
         public static string steamaccountUrl = @"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=";
+        public static string matchhistorybyseqUrl = @"https://api.steampowered.com/IDOTA2Match_570/GetMatchHistoryBySequenceNum/v0001/?key=";
 
         /// <summary>Simply loops throw the list of heroes to find the ID given and then returns that heroes information. 
         /// <seealso cref="http://uglyvpn.com/"/>

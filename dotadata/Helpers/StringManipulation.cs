@@ -71,25 +71,37 @@ namespace dotadata.Helpers
         {//Found a cool way in PHP to convert steam ID so I adopted the method, credit
             //goes to original author, page here: https://gist.github.com/almirsarajcic/4664387
 
-            //this is our converted id object which will be returned
-            string converted_id = string.Empty;
-
-            //if the length of the SteamID is 17 characters
-            //we will assume it is a 64 id
-            if (SteamAccountID.Length == 17)
+            //there is a rare occurence when I get a null
+            //steamid and that is why we are using try/catch
+            try
             {
-                //we remove the prefix of 765
-                //then do the math
-                decimal steamidDec = Convert.ToDecimal(SteamAccountID.Substring(3));
-                converted_id = (steamidDec - 61197960265728).ToString();
-            }
-            else
-            {
-                decimal steamidDec = Convert.ToDecimal(SteamAccountID);
-                converted_id = "765" + (steamidDec + 61197960265728).ToString();
-            }
+                //this is our converted id object which will be returned
+                string converted_id = string.Empty;
 
-            return converted_id;
+
+                //if the length of the SteamID is 17 characters
+                //we will assume it is a 64 id
+                if (SteamAccountID.Length == 17)
+                {
+                    //we remove the prefix of 765
+                    //then do the math
+                    decimal steamidDec = Convert.ToDecimal(SteamAccountID.Substring(3));
+                    converted_id = (steamidDec - 61197960265728).ToString();
+                }
+                else
+                {
+                    decimal steamidDec = Convert.ToDecimal(SteamAccountID);
+                    converted_id = "765" + (steamidDec + 61197960265728).ToString();
+                }
+
+                return converted_id;
+            }
+            catch (Exception)
+            {
+
+                return SteamAccountID;
+            }
+           
         }
 
         /// <summary>SteamIDConverter32to64 will convert a 32bit Steam account ID to a 64bit account ID. 
@@ -114,10 +126,20 @@ namespace dotadata.Helpers
         /// </summary> 
         public static string SteamIDConverter64to32(string SteamID)
         {
-            decimal steamidDec = Convert.ToDecimal(SteamID.Substring(3));
-            string converted_id = (steamidDec - 61197960265728).ToString();
+            //there is a rare occurence when I get a null
+            //steamid and that is why we are using try/catch
+            try
+            {
+                decimal steamidDec = Convert.ToDecimal(SteamID.Substring(3));
+                string converted_id = (steamidDec - 61197960265728).ToString();
 
-            return converted_id;
+                return converted_id;
+            }
+            catch (Exception)
+            {
+                return SteamID;
+            }
+            
         }
 
         /// <summary>Convert our object into json string. 

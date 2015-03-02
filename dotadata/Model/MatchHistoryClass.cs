@@ -86,6 +86,39 @@ namespace dotadata.Model
 
 
         }
+
+        public static List<dotadata.Model.MatchDetails.MatchDetailsResult> GetMatchHistoryBySeqNum(int matchseqnumb, int requestedmatches, List<ItemsClass.Item> DotaItems)
+        {
+            //to do
+            //create a player class to hold more information regarding the individual 
+            //players including abilites/build info
+
+            //we get a list of the latest heroes
+            List<Heroes.Hero> heroes = Heroes.GetHeroes(false);
+
+            //create a container to store all of matches with everything
+            //cleaned up
+            //I create it up here because if If I hit a exception
+            //I wanted to return the object with whatever it has
+
+            List<MatchDetails.MatchDetailsResult> matchlist = new List<MatchDetails.MatchDetailsResult>();
+
+            //download the resposne
+            string response = GetWebResponse.DownloadSteamAPIString(Common.matchhistorybyseqUrl, Common.API + "&start_at_match_seq_num=" + matchseqnumb + "&matches_requested=" + requestedmatches);
+
+
+            //serializing json data to our class
+            //this is when we parse all of the json data into
+            //our custom object classes
+            MatchRootObject ourResponse = JsonConvert.DeserializeObject<MatchRootObject>(response);
+            foreach (var match in ourResponse.result.matches)
+            {
+                var m = MatchDetails.GetMatchDetail(match.match_id, DotaItems);
+                matchlist.Add(m);
+            }
+            return matchlist;
+
+        }
     }
 
     public class Player

@@ -24,6 +24,8 @@ namespace dotadata
             //Get match details for match id 1277955116.
             MatchDetails.MatchDetailsResult matchdetails = MatchDetails.GetMatchDetail(1277955116,items);
 
+            var nextmatches = MatchHistory.GetMatchHistoryBySeqNum(matchdetails.match_seq_num,25,items);
+
             //Gets details regarding a steam account using
             //account id.
             string SteamID = "111348541";
